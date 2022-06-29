@@ -19,7 +19,7 @@ namespace ft
             int     height;
         public:
             Node(): key() {};
-            Node(T, key): key(key){};
+            Node(T key): key(key){};
     };
 
     template <class T, class Compare, class Allocator = std::allocator<T> >
@@ -60,10 +60,10 @@ namespace ft
             key_compare     _comp;
             Node_ptr        _root;
             Node_ptr        _end;
-            int             _size
+            int             _size;
 
         public: //Tree constructor and distructor
-            Tree(const key_compare &compare - key_compare(), const allocator_type& alloc = allocator_type()): _size(0), _comp(compare)
+            Tree(const key_compare &compare = key_compare(), const allocator_type& alloc = allocator_type()): _comp(compare), _size(0)
             {
                 this->_alloc = alloc;
                 this->_end = this->_makeNode(value_type());
@@ -118,7 +118,7 @@ namespace ft
             };
             int     _Height(Node_ptr temp)
             {
-                if (temp = nullptr)
+                if (temp == nullptr)
                     return (0);
                 return (temp->height);
             };
@@ -194,7 +194,7 @@ namespace ft
                 else if (balancefactor < -1)
                 {
                     if (_getBalanceFactor(node->right) <= 0)
-                        return (_leftRotate(node))
+                        return (_leftRotate(node));
                     else
                         return (_RightLeftRotate(node));
                 }
@@ -224,7 +224,7 @@ namespace ft
             };
             Node_ptr    _remove(Node_ptr root, T key)
             {
-                if (root = nullptr) return (nullptr);
+                if (root == nullptr) return (nullptr);
                 else if (this->_comp(key.first, root->key.first))
                     root->left = _remove(root->left, key);
                 else if (this->_comp(root->key.first, key.first))
@@ -314,10 +314,223 @@ namespace ft
             };
             Node_ptr	insertInPossition(Node_ptr position, T key)
             {
-
+                Node_ptr newnode = _makeNode(key);
+				if (position == this->_end)
+				{
+					position = newnode;
+					position->parent = this->_end;
+					this->_end->left = position;
+					++this->_size;
+				}
+				else
+				{
+					++this->_size;
+					position = _insert(position, newnode);
+				}
+				return (newnode);  
             };
-            
+
+            void    remove(T key)
+            {
+                this->_root = _remove(this->_root, key);
+            };
+            void clear()
+            {
+                if (this->_root != this->_end)
+                {
+                    _destroy(this->_root);
+                    this->_size = 0;
+                    this->_root = this->_end;
+                    this->_end->left = this->_root;
+                }
+            };
+            void    swap(Tree& x)
+            {
+                size_type tmp_size = x._size;
+				allocator_type tmp_alloc = x._alloc;
+				Node_ptr tmp_root = x._root;
+				Node_ptr tmp_end = x._end;
+
+				x._size = this->_size;
+				_size = tmp_size;
+
+				x._alloc = this->_alloc;
+				this->_alloc = tmp_alloc;
+
+				x._end = this->_end;
+				this->_end = tmp_end;
+
+				x._root = this->_root;
+				this->_root = tmp_root;
+            };
+            Node_ptr    lower_bound(key_type val) const{
+				Node_ptr node = Min();
+
+				while (!this->_comp(val, node->key.first))
+				{
+					if (val == node->key.first)
+						break;
+					node = successor(node);
+					if (node == nullptr || node == this->_end)
+					{
+						return (this->_end);
+					}
+				}
+				return (node);
+            };
+            Node_ptr upper_bound(key_type val) const
+			{
+				Node_ptr node = Min();
+
+				while (!this->_comp(val, node->key.first))
+				{
+					node = successor(node);
+					if (node == nullptr || node == this->_end)
+					{
+						return (this->_end);
+					}
+				}
+				return (node);
+			};
+			Node_ptr	Min() const
+			{
+				Node_type * tmp = this->_root;
+
+				while (tmp != this->_end && tmp->left)
+					tmp = tmp->left;
+				return (tmp);
+			};
+			Node_ptr Max() const
+			{
+				Node_ptr tmp = this->_root;
+
+				while (tmp->right && tmp->right != this->_end)
+					tmp = tmp->right;
+				return (tmp);
+			};
+			Node_ptr search(key_type key) const
+			{
+				if (this->_root == this->_end)
+					return (this->_end);
+				else
+					return (_search(this->_root, key));
+			};
+			value_type	get_Key() const { return (this->_root->key); };
+			int	getSize() const { return (this->_size); };
+			value_type	get_height() const { return (this->_root->height); };
+
+            private: //Private Functions for printing The tree
+                struct Trunk
+			{
+				Trunk *prev;
+				std::string str;
+
+				Trunk(Trunk *prev, std::string str)
+				{
+					this->prev = prev;
+					this->str = str;
+				}
+			};
+
+			// Helper function to print branches of the binary tree
+			void showTrunks(Trunk *p)
+			{
+				if (p == nullptr) {
+					return;
+				}
+
+				showTrunks(p->prev);
+				std::cout << p->str;
+			};
+
+			void printTree(Node_ptr root, Trunk *prev, bool isLeft)
+			{
+				if (root == nullptr || root == this->_end)
+					return;
+				std::string prev_str = "    ";
+				Trunk *trunk = new Trunk(prev, prev_str);
+				// if (root->right != this->_end)
+				printTree(root->right, trunk, true);
+
+				if (!prev) {
+					trunk->str = "———";
+				}
+				else if (isLeft)
+				{
+					trunk->str = ".———";
+					prev_str = "   |";
+				}
+				else {
+					trunk->str = "`———";
+					prev->str = prev_str;
+				}
+
+				showTrunks(trunk);
+				// std::cout << RED "{ " << root->key.first << " | " << root->key.second << " } "<< RESET;
+				// if (root->parent != nullptr)
+					// std::cout << " {P: " << root->parent->key.first << "} H: " << root->height << GREEN " FB: " << _getBalanceFactor(root) << RESET<< std::endl;
+				// else
+					// std::cout << " {P: NULL" << "} H: " << root->height  << GREEN " FB: " << _getBalanceFactor(root) << RESET << std::endl;
+
+				// std::cout << GREEN << "ROOT Parent : " << this->_root->parent->key.first << RESET << std::endl;
+				if (prev) {
+					prev->str = prev_str;
+				}
+				trunk->str = "   |";
+
+				printTree(root->left, trunk, false);
+			};
+
+            public: // print function
+                void	print() { printTree(this->_root, nullptr, false); };
     };
+    template<class Node_ptr>
+	Node_ptr _TreeMin(Node_ptr temp)
+	{
+		while (temp->left != nullptr)
+			temp = temp->left;
+		return (temp);
+	};
+
+	template<class Node_ptr>
+	Node_ptr _TreeMax(Node_ptr temp)
+	{
+		while (temp->right != nullptr)
+			temp = temp->right;
+		return (temp);
+	};
+
+	template<class Node_ptr>
+	Node_ptr successor(Node_ptr node)
+	{
+		if (node->right)
+			return (_TreeMin(node->right));
+
+		Node_ptr temp = node->parent;
+		while (temp && temp->right == node)
+		{
+			node = temp;
+			temp = temp->parent;
+		}
+		return (temp);
+	};
+
+	template<class Node_ptr>
+	Node_ptr predecessor(Node_ptr node)
+	{
+		if (node->left)
+			return (_TreeMax(node->left));
+
+		Node_ptr temp = node->parent;
+		while (temp && temp->left == node)
+		{
+			node = temp;
+			temp = temp->parent;
+		}
+		if (temp == nullptr)
+			return (node);
+		return (temp);
+	};
 };
 
 

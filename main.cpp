@@ -114,3 +114,6 @@ int main(int argc, char** argv) {
 	std::cout << std::endl;
 	return (0);
 }
+
+
+/////   c++ -Wall -Wextra -Werror -std=c++98

@@ -12,7 +12,7 @@ namespace ft
     class reverse_iterator : public std::iterator<std::random_access_iterator_tag, T>
     {
         public:
-            typedef T                                               iteratot_type;
+            typedef T                                               iterator_type;
             typedef typename std::random_access_iterator_tag        iterator_category;
             typedef typename iterator_traits<T>::value_type         value_type;
             typedef typename iterator_traits<T>::difference_type    difference_type;

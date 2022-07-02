@@ -29,7 +29,7 @@ namespace ft
             VecIter( const VecIter<Iter>& vec_it ): _it(vec_it.base()) {};
 
             iterator_type	base() const            { return (this->_it); };
-            reference operator*() const             { return (this->_it); };
+            reference operator*() const             { return (*this->_it); };
             VecIter& operator++()					{ ++this->_it; return (*this); };
             VecIter  operator++(int)  { VecIter temp(*this); ++(*this); return (temp); };
             VecIter& operator--()					{ --this->_it; return (*this); };

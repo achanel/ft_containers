@@ -60,7 +60,7 @@ namespace ft
             key_compare     _comp;
             Node_ptr        _root;
             Node_ptr        _end;
-            int             _size;
+            size_t          _size;
 
         public: //Tree constructor and distructor
             Tree(const key_compare &compare = key_compare(), const allocator_type& alloc = allocator_type()): _comp(compare), _size(0)
@@ -222,54 +222,52 @@ namespace ft
                 temp = _reBalance(temp);
                 return temp;
             };
-            Node_ptr    _remove(Node_ptr root, T key)
-            {
-                if (root == nullptr) return (nullptr);
-                else if (this->_comp(key.first, root->key.first))
-                    root->left = _remove(root->left, key);
-                else if (this->_comp(root->key.first, key.first))
-                    root->right = _remove(root->right, key);
-                else
-                {
-                    if (root->left == nullptr && root->right == nullptr)
-                    {
-                        this->_alloc.destroy(root);
-                        this->_alloc.deallocate(root, 1);
-                        root = nullptr;
-                        return (root);
-                    }
-                    else if (root->left == nullptr)
-                    {
-                        Node_ptr    temp = root;
-                        root = root->right;
-                        root->parent = temp->parent;
-                        this->_alloc.destroy(temp);
-                        this->_alloc.deallocate(temp, 1);
-                        temp = nullptr;
-                        return (root);
-                    }
-                    else if (root->right == nullptr)
-                    {
-                        Node_ptr    temp = root;
-                        root = root->left;
-                        root->parent = temp->parent;
-                        this->_alloc.destroy(temp);
-                        this->_alloc.deallocate(temp, 1);
-                        temp = nullptr;
-                        return (root);
-                    }
-                    else
-                    {
-                        Node_ptr    temp = _TreeMin(root->right);
-                        value_type  p = temp->key;
-                        root->right = _remove(root->right, temp->key);
-                        this->_alloc.construct(root, p);
-                    }
-                }
-                _ReSetHeight(root);
-                root = _reBalance(root);
-                return (root);
-            };
+            Node_ptr	_remove(Node_ptr root, T key)
+			{
+				if (root == nullptr) return (nullptr);
+				else if (this->_comp(key.first, root->key.first))
+					root->left = _remove(root->left, key);
+				else if (this->_comp(root->key.first, key.first))
+					root->right = _remove(root->right, key);
+				else
+				{
+					if (root->left == nullptr && root->right == nullptr){
+						this->_alloc.destroy(root);
+						this->_alloc.deallocate(root, 1);
+						root = nullptr;
+						return (root);
+					}
+					else if (root->left == nullptr)
+					{
+						Node_ptr	temp = root;
+						root = root->right;
+						root->parent = temp->parent;
+						this->_alloc.destroy(temp);
+						this->_alloc.deallocate(temp, 1);
+						temp = nullptr;
+						return (root);
+					}
+					else if (root->right == nullptr)
+					{
+						Node_ptr	temp = root;
+						root = root->left;
+						root->parent = temp->parent;
+						this->_alloc.destroy(temp);
+						this->_alloc.deallocate(temp, 1);
+						temp = nullptr;
+						return (root);
+					}
+					else{
+						Node_ptr	temp = _TreeMin(root->right);
+						value_type p = temp->key;
+						root->right = _remove(root->right , temp->key);
+						this->_alloc.construct(root, p);
+					}
+				}
+				_ReSetHeight(root);
+				root = _reBalance(root);
+				return (root);
+			};
             Node_ptr    _search(Node_ptr temp, key_type key) const
             {
                 if (temp == nullptr)
@@ -363,7 +361,8 @@ namespace ft
 				x._root = this->_root;
 				this->_root = tmp_root;
             };
-            Node_ptr    lower_bound(key_type val) const{
+			Node_ptr lower_bound(key_type val) const
+			{
 				Node_ptr node = Min();
 
 				while (!this->_comp(val, node->key.first))
@@ -377,8 +376,8 @@ namespace ft
 					}
 				}
 				return (node);
-            };
-            Node_ptr upper_bound(key_type val) const
+			};
+			Node_ptr upper_bound(key_type val) const
 			{
 				Node_ptr node = Min();
 
@@ -392,7 +391,7 @@ namespace ft
 				}
 				return (node);
 			};
-			Node_ptr	Min() const
+			Node_ptr Min() const
 			{
 				Node_type * tmp = this->_root;
 

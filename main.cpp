@@ -3,12 +3,12 @@
 #include <deque>
 #if 1 //CREATE A REAL STL EXAMPLE
 	#include <map>
-	#include <stack>
+	#include <Stack>
 	#include <vector>
 	namespace ft = std;
 #else
 	#include <map.hpp>
-	#include <stack.hpp>
+	#include <Stack.hpp>
 	#include <vector.hpp>
 #endif
 
@@ -26,7 +26,7 @@ struct Buffer
 #define COUNT (MAX_RAM / (int)sizeof(Buffer))
 
 template<typename T>
-class MutantStack : public ft::stack<T>
+class MutantStack : public ft::Stack<T>
 {
 public:
 	MutantStack() {}
@@ -38,7 +38,7 @@ public:
 	}
 	~MutantStack() {}
 
-	typedef typename ft::stack<T>::container_type::iterator iterator;
+	typedef typename ft::Stack<T>::container_type::iterator iterator;
 
 	iterator begin() { return this->c.begin(); }
 	iterator end() { return this->c.end(); }
@@ -57,9 +57,9 @@ int main(int argc, char** argv) {
 
 	ft::vector<std::string> vector_str;
 	ft::vector<int> vector_int;
-	ft::stack<int> stack_int;
+	ft::Stack<int> Stack_int;
 	ft::vector<Buffer> vector_buffer;
-	ft::stack<Buffer, std::deque<Buffer> > stack_deq_buffer;
+	ft::Stack<Buffer, std::deque<Buffer> > Stack_deq_buffer;
 	ft::map<int, int> map_int;
 
 	for (int i = 0; i < COUNT; i++)
@@ -104,10 +104,10 @@ int main(int argc, char** argv) {
 	{
 		ft::map<int, int> copy = map_int;
 	}
-	MutantStack<char> iterable_stack;
+	MutantStack<char> iterable_Stack;
 	for (char letter = 'a'; letter <= 'z'; letter++)
-		iterable_stack.push(letter);
-	for (MutantStack<char>::iterator it = iterable_stack.begin(); it != iterable_stack.end(); it++)
+		iterable_Stack.push(letter);
+	for (MutantStack<char>::iterator it = iterable_Stack.begin(); it != iterable_Stack.end(); it++)
 	{
 		std::cout << *it;
 	}

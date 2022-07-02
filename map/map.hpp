@@ -3,7 +3,7 @@
 
 # include "tree.hpp"
 # include "pair.hpp"
-# include <vector>
+# include "../vector/utils.hpp"
 
 namespace ft
 {
@@ -35,9 +35,7 @@ namespace ft
 					Compare _comp;
 					value_compare (Compare c) : _comp(c) {}  // constructed with map's comparison object
 				public:
-					typedef bool result_type;
-					typedef value_type first_argument_type;
-					typedef value_type second_argument_type;
+
 					bool operator() (const value_type& x, const value_type& y) const
 					{
 						return _comp(x.first, y.first);
@@ -105,7 +103,7 @@ namespace ft
 		public: //Element access
 			mapped_type& operator[] (const key_type& k) { return ((*(insert(ft::make_pair(k, mapped_type())).first)).second); };
 
-		public: //Modifiers !!!
+		public: //Modifiers
 			ft::pair<iterator,bool> insert (const value_type& val)
 			{
 				iterator node = iterator(this->_tree.search(val.first));
@@ -133,7 +131,7 @@ namespace ft
 					first++;
 				};
 			};
-			void	erase(iterator position)
+			void	erase (iterator position)
 			{
 				this->_tree.remove(*position);
 			};
@@ -188,38 +186,37 @@ namespace ft
 	template< class Key, class T, class Compare, class Alloc >
 	bool operator==( const map<Key,T,Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs )
 	{
-		//ft::equal!!
-		return ((lhs.size() == rhs.size()) && (std::equal(lhs.begin(), lhs.end(), rhs.begin())));
+		return ((lhs.size() == rhs.size()) && (ft::equal(lhs.begin(), lhs.end(), rhs.begin())));
 	};
 	
 	template< class Key, class T, class Compare, class Alloc >
 	bool operator!=( const map<Key,T,Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs )
 	{
-		return (lhs != rhs);
+		return !(lhs == rhs);
 	};
 	
 	template< class Key, class T, class Compare, class Alloc >
 	bool operator<( const map<Key,T,Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs )
-	{//ft!!!!lex
-		return (std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
+	{
+		return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
 	};
 	
 	template< class Key, class T, class Compare, class Alloc >
 	bool operator<=( const map<Key,T,Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs )
 	{
-		return (lhs <= rhs);
+		return !(lhs > rhs);
 	};
 	
 	template< class Key, class T, class Compare, class Alloc >
 	bool operator>( const map<Key,T,Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs )
-	{//ft!!!!lex
-		return (std::lexicographical_compare(rhs.begin(), rhs.end(), lhs.begin(), lhs.end()));
+	{
+		return rhs < lhs;
 	};
 	
 	template< class Key, class T, class Compare, class Alloc >
 	bool operator>=( const map<Key,T,Compare,Alloc>& lhs, const map<Key,T,Compare,Alloc>& rhs )
 	{
-		return (lhs >= rhs);
+		return !(lhs < rhs);
 	};
 
 

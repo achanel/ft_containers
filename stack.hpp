@@ -1,21 +1,26 @@
 #ifndef STACK_HPP
 # define STACK_HPP
 
-#include <vector>
+#include "vector/vector.hpp"
 
 namespace ft
 {
-	template <class T, class Container = std::vector<T> >
+	template <class T, class Container = ft::vector<T> >
 	class stack
 	{
 		public:
 			typedef T			value_type;
 			typedef	Container	container_type;
-			typedef typename	container_type::size_type	size_type;
+			typedef typename	container_type::size_type		size_type;
+			typedef typename	container_type::reference		reference;
+			typedef typename	container_type::const_reference	const_reference;
 
 		protected:
 			container_type	_container;
-		
+
+		public:
+			explicit stack (const container_type& ctnr = container_type()):	_container(ctnr) {};
+
 		public:
 			bool empty() const	{ return !_container.size();};
 			size_type size() const	{ return _container.size();};

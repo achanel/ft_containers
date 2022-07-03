@@ -9,17 +9,22 @@ namespace ft
 	class stack
 	{
 		public:
-			typedef T			value_type;
-			typedef	Container	container_type;
+			typedef T											value_type;
+			typedef	Container									container_type;
 			typedef typename	container_type::size_type		size_type;
-			typedef typename	container_type::reference		reference;
-			typedef typename	container_type::const_reference	const_reference;
 
 		protected:
 			container_type	_container;
 
 		public:
 			explicit stack (const container_type& ctnr = container_type()):	_container(ctnr) {};
+			stack(const stack& other): _container(other._container) {}
+			stack& operator= (const stack& other) {
+				if (this != &other)
+					_container = other._container;
+				return *this;
+			}
+			~stack(){};
 
 		public:
 			bool empty() const	{ return !_container.size();};

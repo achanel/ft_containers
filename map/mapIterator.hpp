@@ -1,5 +1,5 @@
-#ifndef ITERATOR_HPP
-# define ITERATOR_HPP
+#ifndef MAPITERATOR_HPP
+# define MAPITERATOR_HPP
 
 # include <iostream>
 # include <string>

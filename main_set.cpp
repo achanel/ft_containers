@@ -3,7 +3,8 @@
 #include <stack>
 #include <exception>
 #include <utility>
-// #include "vector/vector.hpp"
+#include <set>
+#include "vector/utils.hpp"
 #include "set/set.hpp"
 #include "stack.hpp"
 #define NEXTD std::cout << "<---------- ---------- ---------- ---------- ---------- ----------|---------- ---------- ---------- ---------- ---------- ----------|" << std::endl
@@ -43,7 +44,7 @@ int main()
         PH::set<int> second;                    // empty set
 
         second = first;                          // now second contains the 5 ints
-        first = PH::set<int>();                 // and first is empty
+        // first = PH::set<int>();                 // and first is empty
 
         std::cout << "Size of first: " << int (first.size()) << '\n';
         std::cout << "Size of second: " << int (second.size()) << '\n';

@@ -1,6 +1,7 @@
 #pragma once
 
 # include "setTree.hpp"
+#include "../vector/utils.hpp"
 
 namespace ft
 {
@@ -68,18 +69,30 @@ namespace ft
 			size_type max_size() const { return _tree.max_size(); };
 
 		public: //modifiers
-			pair<iterator,bool> insert (const value_type& val);///
+			pair<iterator,bool> insert (const value_type& val) {
+				return _tree.insert(val);
+			};
 
-			iterator insert (iterator position, const value_type& val);///
+			iterator insert (iterator position, const value_type& val) {
+				return _tree.insert(position, val);
+			};
 
 			template <class InputIterator>
-			void insert (InputIterator first, InputIterator last);///
+			void insert (InputIterator first, InputIterator last) {
+				_tree.insert(first, last);
+			};
 
-			void erase (iterator position);///
+			void erase (iterator position) {
+				_tree.erase(position);
+			};
 			
-			size_type erase (const value_type& val);///
+			size_type erase (const value_type& val) {
+				return _tree.erase(val);
+			};
 			
-			void erase (iterator first, iterator last);//
+			void erase (iterator first, iterator last) {
+				_tree.erase(first, last);
+			};
 
 			void swap (set& x) { _tree.swap(x._tree); };
 
@@ -102,16 +115,16 @@ namespace ft
 				return _tree.count(val);
 			};
 
-			iterator lower_bound (const value_type& val) const {
+			iterator lower_bound (const value_type& val) {
 				return (this->_tree.lower_bound(val));
 			};
 
-			iterator upper_bound (const value_type& val) const {
+			iterator upper_bound (const value_type& val) {
 				return (this->_tree.upper_bound(val));
 			};
 
-			pair<iterator,iterator> equal_range (const value_type& val) const {
-				return (ft::make_pair(this->lower_bound(val), this->upper_bound(val)));
+			ft::pair<iterator, iterator> equal_range(const value_type& val) {
+				return _tree.equal_range(val);
 			};
 
 		public: //allocator

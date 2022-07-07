@@ -128,7 +128,7 @@ int main()
 		std::cout << "a => " << mymap.find('a')->second << '\n';
 		std::cout << "c => " << mymap.find('c')->second << '\n';
 		std::cout << "d => " << mymap.find('d')->second << '\n';
-		// std::cout << "d => " << mymap.find('b')->second << '\n';
+		// std::cout << "b => " << mymap.find('b')->second << '\n';
 	}
 	NEXTD;
 	{
@@ -142,7 +142,7 @@ int main()
 		mymap[77] = 50;
 		mymap[6] = 60;
 		// mymap.print();
-		NEXTD;
+		// NEXTD;
 		it = mymap.find(6);
 		mymap.erase(it);	// erasing by iterator
 		mymap.erase(10);	// erasing by key

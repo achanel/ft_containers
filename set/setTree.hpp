@@ -9,42 +9,6 @@
 
 namespace ft
 {
-	template <class T>
-	class node
-	{
-	public:
-
-		char	color;
-		bool	nil;
-		T		*value;
-		node*	left;
-		node*	right;
-		node*	p;
-
-		node(T *value = nullptr) : color(RED), nil(false), value(value),
-								left(nullptr), right(nullptr), p(nullptr) {}
-		node(const node& other)
-		{
-			this->color = other.color;
-			this->nil = other.nil;
-			this->value = other.value;
-			this->left = other.left;
-			this->right = other.right;
-			this->p = other.p;
-		}
-		node& operator=(const node& other)
-		{
-			this->color = other.color;
-			this->nil = other.nil;
-			this->value = other.value;
-			this->left = other.left;
-			this->right = other.right;
-			this->p = other.p;
-			return *this;
-		}
-		~node() {}
-	};
-
 	template <class T, class Compare = std::less<T>, class Alloc = std::allocator<T> >
 	class setTree
 	{
@@ -87,21 +51,21 @@ namespace ft
 
 		template <class InputIterator>
 		setTree(InputIterator first, InputIterator last,
-				const Compare& comp = value_compare(), const A& alloc = allocator_type(),
+				const Compare& comp = value_compare(), const Alloc& alloc = allocator_type(),
 				typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = 0) :
 			_val_alloc(alloc), _node_alloc(node_allocator()), _comp(comp), _size(0)
 		{
-			initStart();
+			initTree();
 			insert(first, last);
 		}
 
-		setTree(const rbTree& other) :
+		setTree(const setTree& other) :
 			_val_alloc(other._val_alloc), _comp(other._comp), _root(nullptr)
 		{
 			*this = other;
 		}
 
-		setTree& operator= (const rbTree& other)
+		setTree& operator= (const setTree& other)
 		{
 			node_pointer	maxNode;
 
@@ -110,7 +74,7 @@ namespace ft
 				if (_root)
 					clearAll(_root);
 				else
-					initStart();
+					initTree();
 				_val_alloc = other._val_alloc;
 				_node_alloc = node_allocator();
 				_comp = other._comp;
@@ -295,7 +259,7 @@ namespace ft
 				erase(first++);
 		}
 
-		void swap(rbTree& x)
+		void swap(setTree& x)
 		{
 			ft::swap(_val_alloc, x._val_alloc);
 			ft::swap(_node_alloc, x._node_alloc);
@@ -789,7 +753,7 @@ namespace ft
 	};
 
 	template <class T, class Compare, class Alloc>
-	bool operator==(const seTree<T, Compare, Alloc>& lhs,
+	bool operator==(const setTree<T, Compare, Alloc>& lhs,
 					const setTree<T, Compare, Alloc>& rhs)
 	{
 		return lhs.size() == rhs.size()
@@ -838,5 +802,3 @@ namespace ft
 		x.swap(y);
 	}
 }
-
-#endif

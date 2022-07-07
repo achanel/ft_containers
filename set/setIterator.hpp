@@ -5,68 +5,172 @@
 # include "setPair.hpp"
 # include "../reverse_iterator.hpp"
 
+# define RED '1'
+# define BLACK '2'
+
 namespace ft
 {
-	template <class T, class Node_ptr>
-	class TreeIter : public std::iterator<std::bidirectional_iterator_tag, T>
+	template <class T>
+	struct noConst
 	{
-        public:
-            typedef T                                               iterator_type;
-            typedef std::bidirectional_iterator_tag					iterator_category;
-            typedef typename iterator_traits<T>::value_type         value_type;
-            typedef typename iterator_traits<T>::difference_type    difference_type;
-            typedef typename iterator_traits<T>::pointer            pointer;
-            typedef typename iterator_traits<T>::reference          reference;
+		typedef T type;
+	};
+	template <class T>
+	struct noConst<const T>
+	{
+		typedef T type;
+	};
 
-		private:
-			Node_ptr	_it;
+	template <class T>
+	class node
+	{
+	public:
 
-		public:
-            TreeIter(): _it(nullptr) {};
-            explicit TreeIter( Node_ptr x ): _it(x) {};
-            template <class Iter>
-            TreeIter( const TreeIter<Iter, Node_ptr>& node_it ): _it(node_it.base()) {};
+		char	color;
+		bool	nil;
+		T		*value;
+		node*	left;
+		node*	right;
+		node*	p;
 
-            Node_ptr	base() const            { return (this->_it); };
-            reference operator*() const             { return (this->_it->key); };
-            TreeIter& operator++()  { this->_it = successor(this->_it); return (*this); };
-            TreeIter  operator++(int)  { TreeIter temp(*this); ++(*this); return (temp); };
-            TreeIter& operator--()  { this->_it = predecessor(this->_it); return (*this); };
-            TreeIter  operator--(int)  { TreeIter temp(*this); ++(*this); return (temp); };
-            pointer operator->() const  { return(&(operator*())); };
-            reference operator[] (difference_type n) const { return(*(this->_it + n)); };
-    };
+		node(T *value = nullptr) : color(RED), nil(false), value(value),
+								left(nullptr), right(nullptr), p(nullptr) {}
+		node(const node& other)
+		{
+			this->color = other.color;
+			this->nil = other.nil;
+			this->value = other.value;
+			this->left = other.left;
+			this->right = other.right;
+			this->p = other.p;
+		}
+		node& operator=(const node& other)
+		{
+			this->color = other.color;
+			this->nil = other.nil;
+			this->value = other.value;
+			this->left = other.left;
+			this->right = other.right;
+			this->p = other.p;
+			return *this;
+		}
+		~node() {}
+	};
 
-	template <class T, class Node_ptr>
-    bool operator== (const TreeIter<T, Node_ptr>& lhs, const TreeIter<T, Node_ptr>& rhs)
-    {
-        return (lhs.base() == rhs.base());
-    }
-    template <class T, class Node_ptr>
-    bool operator!= (const TreeIter<T, Node_ptr>& lhs, const TreeIter<T, Node_ptr>& rhs)
-    {
-        return (lhs.base() != rhs.base());
-    }
-    template <class T, class Node_ptr>
-    bool operator<  (const TreeIter<T, Node_ptr>& lhs, const TreeIter<T, Node_ptr>& rhs)
-    {
-        return (lhs.base() < rhs.base());
-    }
-    template <class T, class Node_ptr>
-    bool operator<= (const TreeIter<T, Node_ptr>& lhs, const TreeIter<T, Node_ptr>& rhs)
-    {
-        return (lhs.base() <= rhs.base());
-    }
-    template <class T, class Node_ptr>
-    bool operator>  (const TreeIter<T, Node_ptr>& lhs, const TreeIter<T, Node_ptr>& rhs)
-    {
-        return (lhs.base() > rhs.base());
-    }
-    template <class T, class Node_ptr>
-    bool operator>= (const TreeIter<T, Node_ptr>& lhs, const TreeIter<T, Node_ptr>& rhs)
-    {
-        return (lhs.base() >= rhs.base());
-    }
-};
+	template <class iter>
+	class TreeIter
+	{
+		typedef node<typename ft::noConst<iter>::type >*	node_pnt;
+		node_pnt			_iter;
+
+	public:
+
+		typedef iter												iterator_type;
+		typedef typename iterator_traits<iter*>::difference_type	difference_type;
+		typedef typename iterator_traits<iter*>::value_type			value_type;
+		typedef typename iterator_traits<iter*>::pointer			pointer;
+		typedef typename iterator_traits<iter*>::reference			reference;
+		typedef std::bidirectional_iterator_tag						iterator_category;
+
+		explicit TreeIter(node_pnt it = nullptr) : _iter(it) {}
+		TreeIter(const TreeIter<typename ft::noConst<value_type>::type >& it)
+		{
+			this->_iter = it.base();
+		}
+		~TreeIter() {}
+		TreeIter& operator=(const TreeIter<typename ft::noConst<value_type>::type >& other)
+		{
+			_iter = other.base();
+			return *this;
+		}
+
+		node_pnt base() const
+		{
+			return _iter;
+		}
+		reference operator*() const
+		{
+			return *_iter->value;
+		}
+		pointer operator->() const
+		{
+			return &**this;
+		}
+		TreeIter& operator++()
+		{
+			if (_iter->right && _iter->right->nil == false)
+				_iter = treeMin(_iter->right);
+			else
+			{
+				node_pnt y = _iter->p;
+				while (y && y->nil == false && _iter == y->right)
+				{
+					_iter = y;
+					y = y->p;
+				}
+				_iter = y;
+			}
+			return *this;
+		}
+		TreeIter operator++(int)
+		{
+			TreeIter tmp(*this);
+
+			++(*this);
+			return tmp;
+		}
+		TreeIter& operator--()
+		{
+			if (_iter->left && _iter->left->nil == false)
+				_iter = treeMax(_iter->left);
+			else
+			{
+				node_pnt y = _iter->p;
+				while (y && y->nil == false && _iter == y->left)
+				{
+					_iter = y;
+					y = y->p;
+				}
+				_iter = y;
+			}
+			return *this;
+		}
+		TreeIter operator--(int)
+		{
+			TreeIter tmp(*this);
+
+			--(*this);
+			return tmp;
+		}
+
+	private:
+
+		node_pnt treeMin(node_pnt x)
+		{
+			while (x->left && x->left->nil == false)
+				x = x->left;
+			return x;
+		}
+		node_pnt treeMax(node_pnt x)
+		{
+			while (x->right && x->right->nil == false)
+				x = x->right;
+			return x;
+		}
+	};
+
+	template <class A, class B>
+	bool operator==(const TreeIter<A>& lhs,
+					const TreeIter<B>& rhs)
+	{
+		return lhs.base() == rhs.base();
+	}
+	template <class A, class B>
+	bool operator!=(const TreeIter<A>& lhs,
+					const TreeIter<B>& rhs)
+	{
+		return lhs.base() != rhs.base();
+	}
+}
 
 #endif
